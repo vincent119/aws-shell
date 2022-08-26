@@ -15,10 +15,12 @@ aws_region_set(){
     export AWS_REGION="ap-northeast-1"
     echo "environment is UAT"
     echo "AWS Region is Tokyo"
+    echo "AWS_REGION=ap-northeast-1"
   elif [[ $ENV == "dev" ]];then
     export AWS_REGION="ap-east-1"
     echo "environment is Dev"
     echo "AWS Region is Hong Kong"
+    echo "AWS_REGION=ap-east-1"
   fi
 
 
