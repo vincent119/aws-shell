@@ -3,12 +3,14 @@ ec2_list() {
   --query "Reservations[].Instances[].[{Name: join(',',Tags[?Key=='Name'].Value),Env: join(',',Tags[?Key=='Environment'].Value), ID: InstanceId, Platform: PlatformDetails, IP: PrivateIpAddress, Type: InstanceType, AZ: Placement.AvailabilityZone}]|[][]|sort_by(@, &Env)" \
   --no-paginate --region ${AWS_REGION} --output table
 }
+
 aws_region_All(){
 aws ec2 describe-regions \
     --all-regions \
     --query "Regions[].{Name:RegionName}" \
     --output table
 }
+
 aws_region_set(){
   ENV=$1
   if [[ $ENV == "uat" ]];then
@@ -37,8 +39,8 @@ aws_elb_Get() {
 }
 aws_elb_Tag() {
     aws elbv2 describe-target-groups --query \
-    "TargetGroups[].[TargetGroupName,Protocol,Port,VpcId,HealthCheckProtocol,HealthCheckPort,HealthCheckEnabled,HealthCheckIntervalSeconds,HealthCheckTimeoutSeconds,HealthyThresholdCount,UnhealthyThresholdCount,HealthCheckPath,TargetType,Matcher.HttpCode]"  \
-    --output text | column -t    
+    "TargetGroups[].[TargetGroupArn,TargetGroupName,Protocol,Port,HealthCheckProtocol,HealthCheckPort,HealthCheckEnabled,HealthCheckIntervalSeconds,HealthCheckTimeoutSeconds,HealthyThresholdCount,UnhealthyThresholdCount,HealthCheckPath,TargetType,Matcher.HttpCode]"  \
+    --output table     
 }
 aws_fw_Rule() {
 aws ec2 describe-security-groups --filters Name=ip-permission.cidr,Values='0.0.0.0/0' --query "SecurityGroups[*].{Name:GroupName,vpc:VpcId,sg:GroupId }" --output table
