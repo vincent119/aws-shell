@@ -45,3 +45,15 @@ aws_elb_Tag() {
 aws_fw_Rule() {
 aws ec2 describe-security-groups --filters Name=ip-permission.cidr,Values='0.0.0.0/0' --query "SecurityGroups[*].{Name:GroupName,vpc:VpcId,sg:GroupId }" --output table
 }
+
+aws_ecr_list(){
+aws ecr describe-repositories --output table --query 'repositories[].[repositoryName,repositoryUri]'
+}
+
+aws_route53_list_host_zone() {
+aws route53 list-hosted-zones --output table --query 'HostedZones[*].[Name,Id]'
+}
+aws_route53_list_record() {
+rid=$1
+aws route53 list-resource-record-sets   --hosted-zone-id $rid --query 'ResourceRecordSets[*].[Name, Type, TTL, ResourceRecords[0].Value]'  --output text
+}
