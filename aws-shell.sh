@@ -23,6 +23,11 @@ aws_region_set(){
     echo "environment is Dev"
     echo "AWS Region is Hong Kong"
     echo "AWS_REGION=ap-east-1"
+  elif [[ $ENV == "prod" ]];then
+    export AWS_REGION="ap-southeast-1"
+    echo "environment is Master"
+    echo "AWS Region is Sigapore"
+    echo "AWS_REGION=ap-southeast-1"
   fi
 
 
