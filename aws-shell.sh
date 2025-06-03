@@ -19,23 +19,23 @@ aws_az_list() {
   aws ec2 describe-availability-zones --region $AWS_REGION --query "AvailabilityZones[*].{RegionName:RegionName,ZoneName:ZoneName,ZoneId:ZoneId}" --output table
 }
 aws_rule(){
-aws ec2 describe-security-groups --filters Name=ip-permission.cidr,Values='0.0.0.0/0' \
+aws ec2 describe-security-groups --region ${AWS_REGION} --filters Name=ip-permission.cidr,Values='0.0.0.0/0' \
     --query "SecurityGroups[*].{Name:GroupName,vpc:VpcId,sg:GroupId }" --output table
 }
 aws_elb_Get() {
-   aws elbv2 describe-load-balancers --query \
+   aws elbv2 describe-load-balancers  --region ${AWS_REGION} --query \
    "LoadBalancers[].[LoadBalancerName,AvailabilityZones[0].ZoneName,AvailabilityZones[0].SubnetId,AvailabilityZones[1].ZoneName,AvailabilityZones[1].SubnetId]" --output table
 
 }
 aws_elb_Tag() {
-    aws elbv2 describe-target-groups --query \
+    aws elbv2 describe-target-groups --region ${AWS_REGION} --query  \
     "TargetGroups[].[TargetGroupArn,TargetGroupName,Protocol,Port,HealthCheckProtocol,HealthCheckPort,HealthCheckEnabled,HealthCheckIntervalSeconds,HealthCheckTimeoutSeconds,HealthyThresholdCount,UnhealthyThresholdCount,HealthCheckPath,TargetType,Matcher.HttpCode]" --output table
 }
 aws_fw_Rule() {
 aws ec2 describe-security-groups --filters Name=ip-permission.cidr,Values='0.0.0.0/0' --query "SecurityGroups[*].{Name:GroupName,vpc:VpcId,sg:GroupId }" --output table
 }
 aws_ecr_list(){
-aws ecr describe-repositories --output table --query 'repositories[].[repositoryName,repositoryUri]'
+aws ecr describe-repositories --region ${AWS_REGION} --output table --query 'repositories[].[repositoryName,repositoryUri]'
 }
 
 aws_route53_list_host_zone() {
@@ -46,7 +46,7 @@ rid=$1
 aws route53 list-resource-record-sets --hosted-zone-id $rid --query 'ResourceRecordSets[*].{Name:Name,Type:Type,TTL:TTL,Value:ResourceRecords[0].Value}'  --output table
 }
 aws_keypair_list() {
-   aws ec2  describe-key-pairs --output table
+   aws ec2  describe-key-pairs --region ${AWS_REGION} --output table
 }
 aws_waf_list() {
   aws  wafv2  list-web-acls --scope  REGIONAL  --query 'WebACLs[*].{Id:Id,Name:Name,ARN:ARN}' --output table
@@ -62,10 +62,12 @@ aws_cf_distributions() {
 # }
 
 awsACMlist(){
-  aws acm list-certificates --query "CertificateSummaryList[*].{ARN:CertificateArn,DomainName:DomainName,Status:Status}"  --output table
+  aws acm list-certificates --region ${AWS_REGION} \
+  --query "CertificateSummaryList[*].{ARN:CertificateArn,DomainName:DomainName,Status:Status}"  --output table
 }
 awsEcrList(){
-  aws ecr describe-repositories --query "repositories[*].{repositoryName:repositoryName,repositoryUri:repositoryUri}" --output table
+  aws ecr describe-repositories --region ${AWS_REGION} \
+  --query "repositories[*].{repositoryName:repositoryName,repositoryUri:repositoryUri}" --output table
 }
 
 awsEcrCreateRepository(){
