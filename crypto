@@ -1,0 +1,9 @@
+base64Encode(){
+  baseString=$1
+  echo -n $baseString | base64
+}
+
+base64Decode(){
+  baseString=$1
+  echo -n $baseString | base64 -d
+}
