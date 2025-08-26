@@ -139,6 +139,7 @@ LibPATH="/Users/vincent/Documents/git_home/vin/aws-shell"
 
 . $LibPATH/aws-region-change.sh
 . $LibPATH/rds.sh
-. $LibPATH/crypto.sh
+#. $LibPATH/crypto.sh
 . $LibPATH/pulumi.sh
 . $LibPATH/menu.sh
+. $LibPATH/aws-eks-ami.sh
