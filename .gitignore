@@ -47,6 +47,8 @@ config
 
 # Output files
 *.out
-./aws-region-change.sh
-./pulumi.sh
-./test.sh
+
+# Excluded scripts
+/aws-region-change.sh
+/pulumi.sh
+/test.sh
