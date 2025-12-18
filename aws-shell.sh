@@ -7,7 +7,7 @@ ec2_list() {
 aws_region_all_name(){
   fmt="%-16s%-4s%-25s\n"
   for i in $(aws ec2 describe-regions  --all-regions  --query 'Regions[].RegionName' --output text)
-  do 
+  do
     printf "$fmt" "'$i" "=>" "$(aws ssm get-parameter --name /aws/service/global-infrastructure/regions/$i/longName --query "Parameter.Value" --output text)',"
   done
 }
@@ -114,7 +114,7 @@ zbgssst(){
   fmt="%-16s%-4s%-25s\t"
   ssss=""
   for i in $(aws ec2 describe-regions --all-regions --query "Regions[].{Name:RegionName}" --output text|awk '{printf "%s ",$1}')
-  do 
+  do
     echo $i
     #bbb="$fmt" """$i"  "$(aws ssm get-parameter --name /aws/service/global-infrastructure/regions/$i/longName --query "Parameter.Value" --output text)"""
     aaa="$i $(aws ec2 describe-availability-zones --region $i --query "AvailabilityZones[*].{RegionName:RegionName,ZoneName:ZoneName,ZoneId:ZoneId}" --output text)"
@@ -137,9 +137,33 @@ zbgssst(){
 
 LibPATH="/Users/vincent/Documents/git_home/vin/aws-shell"
 
-. $LibPATH/aws-region-change.sh
+#. $LibPATH/aws-region-change.sh
 . $LibPATH/rds.sh
 #. $LibPATH/crypto.sh
 . $LibPATH/pulumi.sh
 . $LibPATH/menu.sh
 . $LibPATH/aws-eks-ami.sh
+
+
+
+function awsRegion() {
+  if ! command -v awsRegionChange &> /dev/null; then
+    echo "awsRegionChange not found. Please build/install it first."
+    return 1
+  fi
+  local env_file="${AWS_REGION_CHANGE_ENV_FILE:-$HOME/.aws/aws-region-change.env}"
+
+  awsRegionChange
+  if [[ -f "$env_file" ]]; then
+    local exports
+    exports=$(<"$env_file")
+    if [[ -n "$exports" ]]; then
+      eval "$exports"
+      #printf '%s\n' "$exports"
+    else
+      echo "No changes to AWS profile/region."
+    fi
+  else
+    echo "No env file generated: $env_file"
+  fi
+}
